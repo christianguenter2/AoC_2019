@@ -1,12 +1,17 @@
-const day = process.argv[2];
+const day = process.argv[2] || "";
+let input = [];
 
-const input = require("fs")
-  .readFileSync("./" + day + "/input.txt")
-  .toString()
-  .split(/\n/)
-  .filter(line => {
-    return line !== "";
-  });
+try {
+  input = require("fs")
+    .readFileSync("./" + day + "/input.txt")
+    .toString()
+    .split(/\n/)
+    .filter(line => {
+      return line !== "";
+    });
+} catch (e) {
+  // It's ok. Solution module provides its own data
+}
 
 const solver = require("./" + day + "/solution.js");
 
