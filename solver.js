@@ -15,7 +15,7 @@ let input = (() => {
     return require("fs")
       .readFileSync("./" + day + "/input.txt")
       .toString()
-      .split(/\n/)
+      .split(/\n|\,/)
       .filter(line => {
         return line !== "";
       });
