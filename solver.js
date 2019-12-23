@@ -1,18 +1,28 @@
 const day = process.argv[2] || "";
-let input = [];
-
-try {
-  input = require("fs")
-    .readFileSync("./" + day + "/input.txt")
-    .toString()
-    .split(/\n/)
-    .filter(line => {
-      return line !== "";
-    });
-} catch (e) {
-  // It's ok. Solution module provides its own data
+if (!day) {
+  console.log("Please specify the day");
+  process.exit(1);
 }
 
-const solver = require("./" + day + "/solution.js");
+const part = process.argv[3] || "";
+if (!part) {
+  console.log("Please specify the part");
+  process.exit(1);
+}
 
-console.log(solver.solve(input));
+let input = (() => {
+  try {
+    return require("fs")
+      .readFileSync("./" + day + "/input.txt")
+      .toString()
+      .split(/\n/)
+      .filter(line => {
+        return line !== "";
+      });
+  } catch (e) {
+    // It's ok. Solution module provides its own data
+    return [];
+  }
+})();
+
+console.log(require("./" + day + "/solution_" + part + ".js").solve(input));
