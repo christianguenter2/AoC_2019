@@ -7,7 +7,8 @@ function* times(n) {
   }
 }
 
-const walk = (instructions, visited) => {
+const walk = instructions => {
+  let visited = new Map();
   let position = { x: 0, y: 0 };
   instructions.forEach(x => {
     let [_, direction, length] = x.split(/([RULD])/);
@@ -39,6 +40,7 @@ const walk = (instructions, visited) => {
       visited.set(json, 1);
     }
   });
+  return visited;
 };
 
 const manhattan_distance = coordinate => {
@@ -64,18 +66,11 @@ const merge_maps = (map1, map2) => {
 };
 
 const solve = (s1, s2) => {
-  let visited_1 = new Map();
-  let visited_2 = new Map();
-
-  walk(s1, visited_1);
-  walk(s2, visited_2);
-
-  const visited = merge_maps(visited_1, visited_2);
-
+  const visited = merge_maps(walk(s1), walk(s2));
   let candidates = [...visited].filter(([k, v]) => v > 1);
   return Math.min.apply(
     null,
-    candidates.map(([k, v]) => manhattan_distance(JSON.parse(k)))
+    candidates.map(([k, _]) => manhattan_distance(JSON.parse(k)))
   );
 };
 
