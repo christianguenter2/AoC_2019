@@ -7,6 +7,30 @@ function* times(n) {
   }
 }
 
+const move = (direction, position) => {
+  switch (direction) {
+    case "L":
+      position.x -= 1;
+      break;
+
+    case "R":
+      position.x += 1;
+      break;
+
+    case "D":
+      position.y -= 1;
+      break;
+
+    case "U":
+      position.y += 1;
+      break;
+
+    default:
+      break;
+  }
+  return position;
+};
+
 const walk = instructions => {
   let visited = new Map();
   let position = { x: 0, y: 0 };
@@ -15,29 +39,9 @@ const walk = instructions => {
     let iter = times(parseInt(length));
 
     while (!iter.next().done) {
-      switch (direction) {
-        case "L":
-          position.x -= 1;
-          break;
-
-        case "R":
-          position.x += 1;
-          break;
-
-        case "D":
-          position.y -= 1;
-          break;
-
-        case "U":
-          position.y += 1;
-          break;
-
-        default:
-          break;
-      }
-
+      position = move(direction, position);
       let json = JSON.stringify(position);
-      visited.set(json, 1);
+      visited.set(json);
     }
   });
   return visited;
@@ -51,14 +55,14 @@ const merge_maps = (map1, map2) => {
   let map = new Map();
 
   map1.forEach((_, k) => {
-    map.set(k, 1);
+    map.set(k);
   });
 
   map2.forEach((_, k) => {
     if (map.has(k)) {
       map.set(k, 2);
     } else {
-      map.set(k, 1);
+      map.set(k);
     }
   });
 
