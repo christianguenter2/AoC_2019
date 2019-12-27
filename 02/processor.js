@@ -36,6 +36,7 @@ Processor.prototype.run = function() {
   }
   return this;
 };
+
 Processor.prototype.getProgram = function() {
   return this.program.slice();
 };
