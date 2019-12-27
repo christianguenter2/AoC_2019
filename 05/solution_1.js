@@ -1,14 +1,42 @@
+const R = require("ramda");
+
+const arithmetic_operation = (
+  fn,
+  program,
+  execution_pointer,
+  modeOf1stParameter,
+  modeOf2ndParameter
+) => {
+  let operand1, operand2;
+  let [p1, p2, p3] = [
+    program[execution_pointer + 1],
+    program[execution_pointer + 2],
+    program[execution_pointer + 3]
+  ];
+  if (modeOf1stParameter === "0") {
+    operand1 = program[p1];
+  } else {
+    operand1 = p1;
+  }
+
+  if (modeOf2ndParameter === "0") {
+    operand2 = program[p2];
+  } else {
+    operand2 = p2;
+  }
+  program[p3] = fn(parseInt(operand1), parseInt(operand2));
+  return [program, execution_pointer + 4];
+};
+
+const multiply = R.curry(arithmetic_operation)((op1, op2) => op1 * op2);
+const add = R.curry(arithmetic_operation)((op1, op2) => op1 + op2);
+
 function execute(program, input) {
   let execution_pointer = 0,
     newProgram = [];
 
   while (execution_pointer < program.length) {
-    let operand1 = 0,
-      operand2 = 0,
-      p1,
-      p2,
-      p3;
-
+    let p1;
     let instruction = program[execution_pointer].toString().split("");
     let opCode = parseInt(instruction.slice(-2).join(""));
     let modeOf1stParameter = instruction.slice(-3, -2).join("") || "0";
@@ -16,46 +44,20 @@ function execute(program, input) {
 
     switch (opCode) {
       case 1:
-        [p1, p2, p3] = [
-          program[execution_pointer + 1],
-          program[execution_pointer + 2],
-          program[execution_pointer + 3]
-        ];
-        if (modeOf1stParameter === "0") {
-          operand1 = program[p1];
-        } else {
-          operand1 = p1;
-        }
-
-        if (modeOf2ndParameter === "0") {
-          operand2 = program[p2];
-        } else {
-          operand2 = p2;
-        }
-        program[p3] = parseInt(operand1) + parseInt(operand2);
-        execution_pointer += 4;
-
+        [program, execution_pointer] = add(
+          program,
+          execution_pointer,
+          modeOf1stParameter,
+          modeOf2ndParameter
+        );
         break;
       case 2:
-        [p1, p2, p3] = [
-          program[execution_pointer + 1],
-          program[execution_pointer + 2],
-          program[execution_pointer + 3]
-        ];
-        if (modeOf1stParameter === "0") {
-          operand1 = program[p1];
-        } else {
-          operand1 = p1;
-        }
-
-        if (modeOf2ndParameter === "0") {
-          operand2 = program[p2];
-        } else {
-          operand2 = p2;
-        }
-        program[p3] = parseInt(operand1) * parseInt(operand2);
-
-        execution_pointer += 4;
+        [program, execution_pointer] = multiply(
+          program,
+          execution_pointer,
+          modeOf1stParameter,
+          modeOf2ndParameter
+        );
         break;
 
       case 3:
