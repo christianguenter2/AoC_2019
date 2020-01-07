@@ -1,11 +1,16 @@
-const calculateOrbits = input => {
+const hashInput = input => {
   let m = new Map();
-  let orbits = 0;
   input
     .map(x => x.split(")"))
     .forEach(([v, k]) => {
       m.set(k, v);
     });
+  return m;
+};
+
+const calculateOrbits = input => {
+  const m = hashInput(input);
+  let orbits = 0;
 
   m.forEach((_, k) => {
     var planet = k;
