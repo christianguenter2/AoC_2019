@@ -23,9 +23,35 @@ const calculateOrbits = input => {
   return orbits;
 };
 
+const directedWalk = (input, from, to) => {
+  const m = hashInput(input);
+  let steps = [];
+
+  let planet = from;
+  while (planet !== to && planet !== "COM") {
+    planet = m.get(planet);
+    steps.push(planet);
+  }
+  steps.pop();
+
+  return steps;
+};
+
+const walk = (input, from, to) => {
+  const fToCOM = directedWalk(input, from, "COM");
+  const tToCOM = directedWalk(input, to, "COM");
+
+  for (const x in fToCOM) {
+    const element = fToCOM[x];
+    if (tToCOM.includes(element)) {
+      return parseInt(x) + tToCOM.indexOf(element);
+    }
+  }
+};
+
 exports.solve = input => {
   const assert = require("assert");
-  const testData = [
+  let testData = [
     "COM)B",
     "B)C",
     "C)D",
@@ -41,6 +67,16 @@ exports.solve = input => {
 
   assert(calculateOrbits(["COM)A", "A)B"]) === 3);
   assert(calculateOrbits(testData) === 42);
+  assert(calculateOrbits(input) === 158090);
 
-  return calculateOrbits(input);
+  testData.push("K)YOU");
+  testData.push("I)SAN");
+
+  assert.deepEqual(directedWalk(testData, "YOU", "D"), ["K", "J", "E"]);
+  assert.deepEqual(directedWalk(testData, "SAN", "D"), ["I"]);
+
+  assert(walk(testData, "YOU", "SAN") === 4);
+  assert(walk(input, "YOU", "SAN") === 241);
+
+  return walk(input, "YOU", "SAN");
 };
